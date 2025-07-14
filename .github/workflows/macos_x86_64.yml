@@ -34,6 +34,7 @@ jobs:
           sudo mkdir /usr/local/gfortran
           sudo ln -s /usr/local/Cellar/gcc@14/14.3.0_1/lib/gcc/14 /usr/local/gfortran/lib
           gfortran --version
+          brew info gcc
           export PATH="$PATH:/usr/local/Cellar/gcc/14.2.0/libexec/gcc/x86_64-apple-darwin21/14/"
           export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/Cellar/gcc/14.2.0/lib/gcc/14/"
           export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/Cellar/gcc/14.2.0/lib/gcc/14/"
