@@ -32,10 +32,10 @@ jobs:
           export CURL_CA_BUNDLE=/tmp/cacert.pem
           sudo ln -s /usr/local/bin/gfortran-14 /usr/local/bin/gfortran
           sudo mkdir /usr/local/gfortran
-          sudo ln -s /usr/local/Cellar/gcc/14.3.0/lib/gcc/14 /usr/local/gfortran/lib
+          sudo ln -s /usr/local/Cellar/gcc@14/14.3.0/lib/gcc/14 /usr/local/gfortran/lib
           gfortran --version
-          sudo find /usr/local -type d -name "14.3.0"
-          export PATH="$PATH:/usr/local/Cellar/gcc/14.3.0/libexec/gcc/x86_64-apple-darwin21/14/"
-          export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/Cellar/gcc/14.3.0/lib/gcc/14/"
-          export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/Cellar/gcc/14.3.0/lib/gcc/14/"
+          sudo find /usr/local -type d -name "14"
+          export PATH="$PATH:/usr/local/Cellar/gcc@14/14.3.0/libexec/gcc/x86_64-apple-darwin21/14/"
+          export LIBRARY_PATH="$LIBRARY_PATH:/usr/local/Cellar/gcc@14/14.3.0/lib/gcc/14/"
+          export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/Cellar/gcc@14/14.3.0/lib/gcc/14/"
           xmake l ./scripts/test.lua -D -a ${{ matrix.arch }} -k ${{ matrix.kind }}
