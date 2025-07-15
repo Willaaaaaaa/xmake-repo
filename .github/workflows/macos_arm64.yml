@@ -33,9 +33,32 @@ jobs:
           sudo ln /opt/homebrew/bin/gfortran-14 /opt/homebrew/bin/gfortran
           sudo mkdir /opt/homebrew/gfortran
           sudo ln -s /opt/homebrew/Cellar/gcc@14/14.3.0/lib/gcc/14 /opt/homebrew/gfortran/lib
-          gfortran --version
-          sudo find /opt/homebrew/Cellar -type d -name "14"
           export PATH="$PATH:/opt/homebrew/Cellar/gcc@14/14.3.0/libexec/gcc/aarch64-apple-darwin23/14/"
           export LIBRARY_PATH="$LIBRARY_PATH:/opt/homebrew/Cellar/gcc@14/14.3.0/lib/gcc/14/"
           export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/opt/homebrew/Cellar/gcc@14/14.3.0/lib/gcc/14/"
+          
+          echo "------------------------------------------------------------------------------"
+          echo "------------------------------------------------------------------------------"
+          echo "------------------------------------------------------------------------------"
+          echo "=== 验证gfortran路径 ==="
+          ls -la /opt/homebrew/bin/gfortran-14 || echo "!!! /opt/homebrew/bin/gfortran-14 不存在"
+          ls -la /opt/homebrew/bin/gfortran || echo "!!! /opt/homebrew/bin/gfortran 链接不存在"
+          
+          echo "=== 验证GCC路径 ==="
+          ls -la /opt/homebrew/Cellar/gcc@14/14.3.0/lib/gcc/14 || echo "!!! /opt/homebrew/Cellar/gcc@14/14.3.0/lib/gcc/14 不存在"
+          ls -la /opt/homebrew/Cellar/gcc@14/14.3.0/libexec/gcc/aarch64-apple-darwin23/14/ || echo "!!! /opt/homebrew/Cellar/gcc@14/14.3.0/libexec/gcc/aarch64-apple-darwin23/14/ 不存在"
+          ls -la /opt/homebrew/gfortran/lib || echo "!!! /opt/homebrew/gfortran/lib 链接不存在"
+          
+          echo "=== 验证环境变量 ==="
+          echo "PATH: $PATH"
+          echo "LIBRARY_PATH: $LIBRARY_PATH" 
+          echo "LD_LIBRARY_PATH: $LD_LIBRARY_PATH"
+          
+          echo "=== 测试gfortran命令 ==="
+          which gfortran || echo "!!! which gfortran 未找到"
+          gfortran --version || echo "!!! gfortran --version 无法执行"
+          echo "------------------------------------------------------------------------------"
+          echo "------------------------------------------------------------------------------"
+          echo "------------------------------------------------------------------------------"
+          
           xmake l ./scripts/test.lua -D -a ${{ matrix.arch }} -k ${{ matrix.kind }}
