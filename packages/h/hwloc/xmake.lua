@@ -26,10 +26,6 @@ package("hwloc")
         add_versions("2.12.1", "ffa02c3a308275a9339fbe92add054fac8e9a00cb8fe8c53340094012cb7c633")
     end
 
-    if is_plat("windows") and is_arch("arm64") then
-        add_patches(">=2.7.1", "patches/2.12.1/cmake-win-arm64.patch", "987880ba30b05c41386d7242057ef6de313d29f925c3b936945e13e9f492dc68")
-    end
-
     add_configs("lstopo", {description = "Build/install lstopo(only for win arm64).", default = false, type = "boolean"})
     add_configs("tools", {description = "Build/install other hwloc tools(only for win arm64).", default = false, type = "boolean"})
     add_configs("libxml2", {description = "Use libxml2 instead of minimal XML.", default = false, type = "boolean"})
@@ -69,7 +65,7 @@ package("hwloc")
             os.cp("include", package:installdir())
             os.cp("lib/*|*.a", package:installdir("lib"))
         elseif package:is_plat("windows") then
-            local configs = {"-DHWLOC_ENABLE_TESTING=OFF", "-DCMAKE_SYSTEM_PROCESSOR=ARM64"}
+            local configs = {"-DHWLOC_ENABLE_TESTING=OFF"}
             table.insert(configs, "-DHWLOC_SKIP_LSTOPO=" .. ((not package:config("lstopo")) and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_SKIP_TOOLS=" .. ((not package:config("tools")) and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_BUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
@@ -78,6 +74,7 @@ package("hwloc")
             table.insert(configs, "-DHWLOC_WITH_OPENCL=" .. (package:config("opencl") and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_WITH_CUDA=" .. (package:config("cuda") and "ON" or "OFF"))
             os.cd("contrib/windows-cmake")
+            io.replace("CMakeLists.txt", "${TOPDIR}/hwloc/topology-x86.c", "", {plain = true})
             import("package.tools.cmake").install(package, configs)
         else
             local configs = {"--disable-pci"}
