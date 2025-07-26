@@ -51,7 +51,7 @@ package("hwloc")
         end
     end)
 
-    on_load(function (package)
+    on_load("windows", function (package)
         if package:config("libxml2") then
             package:add("deps", "libxml2")
         end
@@ -63,13 +63,13 @@ package("hwloc")
         end
     end)
 
-    on_install("windows", "macosx", "linux", function (package)
+    on_install("windows", function (package)
         if package:is_plat("windows") and package:is_arch("x86", "x64") then
             os.cp("bin", package:installdir())
             os.cp("include", package:installdir())
             os.cp("lib/*|*.a", package:installdir("lib"))
         elseif package:is_plat("windows") then
-            local configs = {"-DHWLOC_ENABLE_TESTING=OFF"}
+            local configs = {"-DHWLOC_ENABLE_TESTING=OFF", "-DCMAKE_SYSTEM_PROCESSOR=ARM64"}
             table.insert(configs, "-DHWLOC_SKIP_LSTOPO=" .. ((not package:config("lstopo")) and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_SKIP_TOOLS=" .. ((not package:config("tools")) and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_BUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
@@ -99,6 +99,6 @@ package("hwloc")
         end
     end)
 
-    on_test(function (package)
+    on_test("windows", function (package)
         assert(package:has_cfuncs("hwloc_get_api_version", {includes = "hwloc.h"}))
     end)
