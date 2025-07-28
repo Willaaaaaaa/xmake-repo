@@ -1,4 +1,5 @@
 package("cpu-features")
+    -- trigger
     set_homepage("https://github.com/google/cpu_features")
     set_description("A cross platform C99 library to get cpu features at runtime.")
     set_license("Apache-2.0")
