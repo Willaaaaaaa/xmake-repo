@@ -1,4 +1,5 @@
 package("cpuinfo")
+    -- trigger
     set_homepage("https://github.com/pytorch/cpuinfo")
     set_description("CPU INFOrmation library (x86/x86-64/ARM/ARM64, Linux/Windows/Android/macOS/iOS)")
     set_license("BSD-2-Clause")
