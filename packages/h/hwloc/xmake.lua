@@ -27,7 +27,7 @@ package("hwloc")
     end
 
     if is_plat("windows") and is_arch("arm64") then
-        add_patches(">=2.7.1", "patches/2.12.1/cmake-win-arm64.patch", "4915cd3916ee9dd3219aebab1a6e1b5449b7ba22b83955d2035eff64ae480b50")
+        add_patches(">=2.7.1", "patches/2.12.1/cmake-win-arm64.patch", "672c7c120cb4f163f7b343c27ceed99c36cd5e3967632ca7c3f97e5ba837bf3c")
     end
 
     add_configs("lstopo", {description = "Build/install lstopo(only for win arm64).", default = false, type = "boolean"})
@@ -69,7 +69,7 @@ package("hwloc")
             os.cp("include", package:installdir())
             os.cp("lib/*|*.a", package:installdir("lib"))
         elseif package:is_plat("windows") then
-            local configs = {"-DHWLOC_ENABLE_TESTING=OFF", "-DCMAKE_SYSTEM_PROCESSOR=ARM64"}
+            local configs = {"-DHWLOC_ENABLE_TESTING=OFF"}
             table.insert(configs, "-DHWLOC_SKIP_LSTOPO=" .. ((not package:config("lstopo")) and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_SKIP_TOOLS=" .. ((not package:config("tools")) and "ON" or "OFF"))
             table.insert(configs, "-DHWLOC_BUILD_SHARED_LIBS=" .. (package:config("shared") and "ON" or "OFF"))
