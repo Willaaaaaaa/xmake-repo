@@ -1,8 +1,6 @@
 package("jemalloc")
-
     set_homepage("http://jemalloc.net/")
-    set_description([[A general purpose malloc(3) implementation that emphasizes
-fragmentation avoidance and scalable concurrency support]])
+    set_description("A general purpose malloc(3) implementation that emphasizes fragmentation avoidance and scalable concurrency support")
 
     set_urls("https://github.com/jemalloc/jemalloc/releases/download/$(version)/jemalloc-$(version).tar.bz2",
              "https://github.com/jemalloc/jemalloc.git")
@@ -28,7 +26,6 @@ fragmentation avoidance and scalable concurrency support]])
         else
             package:add("links", "jemalloc")
         end
-
     end)
 
     on_install("linux", "macosx", "mingw@macosx", function(package)
@@ -39,6 +36,9 @@ fragmentation avoidance and scalable concurrency support]])
             table.insert(configs, "--with-pic")
         end
         import("package.tools.autoconf").install(package, configs)
+        os.execv("ls", {package:installdir("bin")})
+        os.execv("ls", {package:installdir("lib")})
+        os.execv("tree", {package:installdir(), "|| echo 'no tree.'"})
     end)
 
     on_test(function(package)
