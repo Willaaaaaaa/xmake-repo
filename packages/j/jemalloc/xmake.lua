@@ -21,6 +21,10 @@ package("jemalloc")
     end
 
     on_load(function (package)
+        if package:is_plat("android") and is_host("windows") then
+            -- TODO
+            raise("package(jemalloc): android cross-compilation on windows host is not supported, please use a Linux host/WSL")
+        end
         if package:gitref() then
             package:add("deps", "automake", "autoconf")
         end
@@ -31,7 +35,6 @@ package("jemalloc")
 
     on_install("linux", "macosx", "bsd", "android", "mingw", function(package)
         local configs = {"--enable-doc=no"}
-        local cflags = {}
         table.insert(configs, "--enable-debug=" .. (package:is_debug() and "yes" or "no"))
         table.insert(configs, "--enable-shared=" .. (package:config("shared") and "yes" or "no"))
         table.insert(configs, "--enable-static=" .. (package:config("shared") and "no" or "yes"))
@@ -50,21 +53,8 @@ package("jemalloc")
                     printf("%s\n", error);
                 }
             ]]})
-            if has_gnu_strerror_r then
-                table.insert(cflags, "-DJEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE")
-            end
-            io.replace("include/jemalloc/internal/jemalloc_internal_decls.h",
-                "#ifdef _WIN32",
-                "#if defined(_WIN32) && !defined(__ANDROID__) && !defined(__linux__)", {plain = true})
-            if is_host("windows") then
-                table.insert(cflags, "-UWIN32")
-                table.insert(cflags, "-U_WIN32")
-                table.insert(cflags, "-UWIN64")
-                table.insert(cflags, "-U_WIN64")
-                table.insert(configs, "--disable-libdl")
-            end
         end
-        import("package.tools.autoconf").install(package, configs, {cflags = cflags})
+        import("package.tools.autoconf").install(package, configs, {cflags = has_gnu_strerror_r and "-DJEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE" or {}})
     end)
 
     on_test(function(package)
