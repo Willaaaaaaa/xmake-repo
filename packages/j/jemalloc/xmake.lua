@@ -31,6 +31,7 @@ package("jemalloc")
 
     on_install("linux", "macosx", "bsd", "android@linux", "mingw", function(package)
         local configs = {"--enable-doc=no"}
+        local cflags = {}
         table.insert(configs, "--enable-debug=" .. (package:is_debug() and "yes" or "no"))
         table.insert(configs, "--enable-shared=" .. (package:config("shared") and "yes" or "no"))
         table.insert(configs, "--enable-static=" .. (package:config("shared") and "no" or "yes"))
@@ -51,8 +52,11 @@ package("jemalloc")
                     printf("%s\n", error);
                 }
             ]]})
+            if has_gnu_strerror_r then
+                table.insert(cflags, "-DJEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE")
+            end
         end
-        import("package.tools.autoconf").install(package, configs, {cflags = has_gnu_strerror_r and {"-DJEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE"} or {}})
+        import("package.tools.autoconf").install(package, configs, {cflags = cflags})
     end)
 
     on_test(function(package)
