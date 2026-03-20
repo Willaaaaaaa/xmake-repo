@@ -21,10 +21,6 @@ package("jemalloc")
     end
 
     on_load(function (package)
-        if package:is_plat("android") and is_host("windows") then
-            -- TODO
-            raise("package(jemalloc): android cross-compilation on windows host is not supported, please use a Linux host/WSL")
-        end
         if package:gitref() then
             package:add("deps", "automake", "autoconf")
         end
@@ -33,13 +29,15 @@ package("jemalloc")
         end
     end)
 
-    on_install("linux", "macosx", "bsd", "android", "mingw", function(package)
+    on_install("linux", "macosx", "bsd", "android@linux", "mingw", function(package)
         local configs = {"--enable-doc=no"}
         table.insert(configs, "--enable-debug=" .. (package:is_debug() and "yes" or "no"))
         table.insert(configs, "--enable-shared=" .. (package:config("shared") and "yes" or "no"))
         table.insert(configs, "--enable-static=" .. (package:config("shared") and "no" or "yes"))
         table.insert(configs, "--with-jemalloc-prefix=" .. package:config("prefix"))
         table.insert(configs, "--enable-prof=" .. (package:config("prof") and "yes" or "no"))
+
+        local has_gnu_strerror_r = false
         if package:is_plat("android") then
             local has_gnu_strerror_r, _ = package:check_csnippets({test = [[
                 #define _GNU_SOURCE 1
@@ -54,7 +52,7 @@ package("jemalloc")
                 }
             ]]})
         end
-        import("package.tools.autoconf").install(package, configs, {cflags = has_gnu_strerror_r and "-DJEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE" or {}})
+        import("package.tools.autoconf").install(package, configs, {cflags = has_gnu_strerror_r and {"-DJEMALLOC_STRERROR_R_RETURNS_CHAR_WITH_GNU_SOURCE"} or {}})
     end)
 
     on_test(function(package)
