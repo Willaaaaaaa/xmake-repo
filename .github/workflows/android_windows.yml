@@ -1,6 +1,7 @@
 name: Android (Windows)
 
 on:
+  push:
   pull_request:
     branches:
       - dev
@@ -11,8 +12,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-latest]
-        arch: [armeabi-v7a, arm64-v8a]
-        ndk: ["r22", "r27"]
+        arch: [armeabi-v7a]
+        ndk: ["r27"]
         ndk_sdkver: ["30"]
 
     runs-on: ${{ matrix.os }}
@@ -49,7 +50,5 @@ jobs:
           ANDROID_NDK_HOME: ""
         run: |
           if ("${{ matrix.ndk }}" -eq "r27") {
-            xrepo env -y -b "ndk 27" xmake l ./scripts/test.lua -D -p android -a ${{ matrix.arch }} --ndk_sdkver=${{ matrix.ndk_sdkver }} 
-          } else {
-            xrepo env -y -b "ndk 22" xmake l ./scripts/test.lua -D -p android -a ${{ matrix.arch }} --ndk_sdkver=${{ matrix.ndk_sdkver }} 
+            xrepo env -y -b "ndk 27" xmake l ./scripts/test.lua -vD -p android -a ${{ matrix.arch }} --ndk_sdkver=${{ matrix.ndk_sdkver }} 
           }

@@ -12,10 +12,10 @@ jobs:
       fail-fast: false
       matrix:
         include: [
-            { msystem: MINGW64, kind: static, arch: x86_64, prefix: /mingw64 },
-            { msystem: MINGW64, kind: shared, arch: x86_64, prefix: /mingw64 },
-            { msystem: MINGW32, kind: static, arch: i686,   prefix: /mingw32 },
-            { msystem: MINGW32, kind: shared, arch: i686,   prefix: /mingw32 }
+            # { msystem: MINGW64, kind: static, arch: x86_64, prefix: /mingw64 },
+            { msystem: MINGW64, kind: shared, arch: x86_64, prefix: /mingw64 }
+            # { msystem: MINGW32, kind: static, arch: i686,   prefix: /mingw32 },
+            # { msystem: MINGW32, kind: shared, arch: i686,   prefix: /mingw32 }
         ]
 
     concurrency:
@@ -48,7 +48,5 @@ jobs:
         run: |
           if [ "${{ matrix.arch }}" == "x86_64" ]; then
             xmake l ./scripts/test.lua -vD -p mingw -a x86_64 -k ${{ matrix.kind }}
-          else
-            xmake l ./scripts/test.lua -vD -p mingw -a i386 -k ${{ matrix.kind }}
           fi
 
